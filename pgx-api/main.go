@@ -41,11 +41,12 @@ func main() {
 	
     var homeCertDir = os.Getenv("TICKETS_CERTS")
     var err error
+	databaseURL := "postgres://julian:<password>@<host>:26257/tickets?sslmode=require&sslcert="+homeCertDir+"/certs/client.julian.crt&sslkey="+homeCertDir+"/certs/client.julian.key&sslrootcert="+homeCertDir+"/certs/ca.crtapplication_name=pgx-app&pool_max_conns=20&pool_max_conn_lifetime=300s&pool_max_conn_lifetime_jitter=30s"
 	
     // Insecure	
     // db, err = pgxpool.Connect(context.Background(), "postgres://root@<host>:26257/tickets?application_name=pgx-crdb-app")
     // Secure
-    db, err = pgxpool.Connect(context.Background(), "postgres://julian:<password>@<host>:26257/tickets?sslmode=require&sslcert="+homeCertDir+"/certs/client.julian.crt&sslkey="+homeCertDir+"/certs/client.julian.key&sslrootcert="+homeCertDir+"/certs/ca.crtapplication_name=pgx-app&pool_max_conns=20&pool_max_conn_lifetime=300s&pool_max_conn_lifetime_jitter=30s")
+    db, err = pgxpool.Connect(context.Background(), databaseURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connection to database: %v\n", err)
 		os.Exit(1)
