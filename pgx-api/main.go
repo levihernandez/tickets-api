@@ -38,8 +38,14 @@ type Purchase struct {
 var db *pgxpool.Pool
 
 func main() {
-	var err error
-	db, err = pgxpool.Connect(context.Background(), "postgres://root@192.168.86.74:26257/tickets?application_name=pgx-crdb-app")
+	
+    var homeCertDir = os.Getenv("TICKETS_CERTS")
+    var err error
+	
+    // Insecure	
+    // db, err = pgxpool.Connect(context.Background(), "postgres://root@<host>:26257/tickets?application_name=pgx-crdb-app")
+    // Secure
+    db, err = pgxpool.Connect(context.Background(), "postgres://julian:<password>@<host>:26257/tickets?sslmode=require&sslcert="+homeCertDir+"/certs/client.julian.crt&sslkey="+homeCertDir+"/certs/client.julian.key&sslrootcert="+homeCertDir+"/certs/ca.crt&application_name=pgx-crdb-app")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connection to database: %v\n", err)
 		os.Exit(1)
@@ -50,6 +56,7 @@ func main() {
 	- if random number generator is 5%
  	- then drop existing connection manager
   	- and create a new connection
+   	This is performed by K6 Scripts
  	*/
 	r := gin.Default()
 
@@ -74,12 +81,15 @@ func getUserPurchases(c *gin.Context) {
 		return
 	}
 
-	rows, err := db.Query(context.Background(),
-		`SELECT p.*, u.*, e.*
-		 FROM purchases p
-		 JOIN users u ON u.id = p.user_id
-		 JOIN events e ON e.id = p.event_id
-		 WHERE p.user_id = $1`, uuidUserID)
+    rows, err := db.Query(context.Background(),
+    `SELECT purchase.id, purchase.user_id, purchase.event_id, purchase.status, users.id AS user__id, users.name AS user__name,
+events.id AS event__id, events.name AS event__name, events.type AS event__type, events.status AS event__status
+ FROM purchases AS purchase LEFT
+   JOIN users AS users
+    ON users.id = purchase.user_id LEFT
+   JOIN events AS events
+    ON events.id = purchase.event_id
+   WHERE (purchase.user_id = $1)`, uuidUserID)
 
 	if err != nil {
 		fmt.Println(err)
@@ -118,11 +128,14 @@ func getUserCancelledPurchases(c *gin.Context) {
 	}
 
 	rows, err := db.Query(context.Background(),
-		`SELECT p.*, u.*, e.*
-		 FROM purchases p
-		 JOIN users u ON u.id = p.user_id
-		 JOIN events e ON e.id = p.event_id
-		 WHERE p.user_id = $1 AND p.status = 'cancelled'`, uuidUserID)
+    `SELECT purchase.id, purchase.user_id, purchase.event_id, purchase.status, users.id AS user__id, users.name AS user__name,
+events.id AS event__id, events.name AS event__name, events.type AS event__type, events.status AS event__status
+ FROM purchases AS purchase LEFT
+   JOIN users AS users
+    ON users.id = purchase.user_id LEFT
+   JOIN events AS events
+    ON events.id = purchase.event_id
+        WHERE (purchase.user_id = $1) AND purchase.status = 'cancelled'`, uuidUserID)
 
 	if err != nil {
 		fmt.Println(err)
