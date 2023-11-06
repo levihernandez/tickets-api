@@ -30,7 +30,24 @@ export const options = {
     },
   },
   thresholds: {
-    // Define any thresholds
+    // The 95th percentile of all HTTP request durations should be below 500ms
+    'http_req_duration': ['p(95)<500'],
+
+    // The rate of HTTP requests with status code 200 should be higher than 99%
+    'http_reqs{status:200}': ['rate>0.99'],
+
+    // No more than 1% of all requests should result in a client error (status code 4xx)
+    'http_reqs{status:4xx}': ['rate<=0.01'],
+
+    // No more than 0.1% of all requests should result in a server error (status code 5xx)
+    'http_reqs{status:5xx}': ['rate<=0.001'],
+
+    // You can also set thresholds for custom metrics if you've defined any.
+    // Here's an example for a custom transaction duration metric:
+    // 'my_custom_transaction_duration': ['avg<100', 'max<1000'],
+
+    // If you have any checks in your script, you can ensure a certain success rate:
+    'checks': ['rate>0.9'], // 90% of checks should pass
   },
 };
 
