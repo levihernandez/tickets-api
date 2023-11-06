@@ -3,6 +3,8 @@ Tickets API Simulation
 
 ## Seed the Database
 
+* Install dependencies
+  * `pip install -r requirements.txt`
 * Change the DB url in db-seed/seed.py
   * `engine = create_engine('cockroachdb://root@192.168.86.74:26257/tickets')`
 * Execute the Python script
