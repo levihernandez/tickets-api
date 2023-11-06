@@ -44,6 +44,26 @@ func main() {
 
     var homeCertDir = os.Getenv("TICKETS_CERTS")
 
+/*
+    // Load CA certificate
+    caCert, err := ioutil.ReadFile("path/to/ca.crt")
+    if err != nil {
+    	log.Fatalf("Unable to read CA cert: %v", err)
+    }
+
+    // Create a certificate pool and add the CA certificate
+    caCertPool := x509.NewCertPool()
+    if !caCertPool.AppendCertsFromPEM(caCert) {
+    	log.Fatalf("Failed to append CA certificate to pool")
+    }
+
+    // Set up TLS configuration
+    tlsConfig := &tls.Config{
+    	RootCAs:            caCertPool,
+    	InsecureSkipVerify: false, // Do not skip server certificate verification
+    }
+*/
+	
     // Create a new TLS configuration.
     tlsConfig := &tls.Config{
         // Set InsecureSkipVerify to true if you want to skip certificate validation.
