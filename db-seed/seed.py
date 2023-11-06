@@ -90,10 +90,9 @@ def main(args):
     # Secure connection
     #  engine = create_engine(
     #    'cockroachdb://{user}:{password}@{crdb-url}:26257/tickets?sslmode=verify-full&sslrootcert={home_certs}/certs/ca.crt&sslcert={home_certs}/certs/client.julian.crt&sslkey={home_certs}/certs/client.julian.key'
-    #)
+    # )
     engine = create_engine(
         'cockroachdb://{user}:{password}@{crdb-url}:26257/tickets?sslmode=verify-full&sslrootcert={home_certs}/certs/ca.crt&sslcert={home_certs}/certs/client.julian.crt&sslkey={home_certs}/certs/client.julian.key'
-    )
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
