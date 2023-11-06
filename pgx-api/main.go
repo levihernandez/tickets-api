@@ -58,6 +58,25 @@ func main() {
   	- and create a new connection
    	This is performed by K6 Scripts
  	*/
+
+	// Simulate connection pool interruption
+	fmt.Println("Simulating connection pool disruption...")
+	db.Close()
+
+	// Wait for a bit (simulate downtime)
+	time.Sleep(5 * time.Second)
+
+	// "Restart" the connection pool by creating a new pool
+	fmt.Println("Restarting the connection pool...")
+	db, err = pgxpool.Connect(context.Background(), databaseURL)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	
+	
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
