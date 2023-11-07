@@ -8,7 +8,7 @@ Tickets API Simulation
 * Change the DB url in db-seed/seed.py
   * `engine = create_engine('cockroachdb://root@192.168.86.74:26257/tickets')`
 * Execute the Python script
-  * `python db-seed/seed.py --num_users 500 --num_purchases 1000 --num_cancellations 200 --num_payments 4000`
+  * `python db-seed/seed.py  --num_users 1000 --num_purchases 15000000 ----num_events 200000 --num_cancellations 200000 --num_payments 20000`
 
 ## Tickets API Endpoints
 
