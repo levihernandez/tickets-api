@@ -43,7 +43,7 @@ class Payment(Base):
     status = Column(String)
 
 
-def create_fake_data(session, num_users, num_purchases, num_cancellations, num_payments, batch_size=100):
+def create_fake_data(session, num_users, num_purchases, num_events, num_cancellations, num_payments, batch_size=100):
     user_ids = []
     event_ids = []
     purchase_ids = []
@@ -54,8 +54,8 @@ def create_fake_data(session, num_users, num_purchases, num_cancellations, num_p
     session.add_all(user_ids)
     session.commit()
 
-    for _ in tqdm(range(num_purchases), desc='Creating Events'):
-        event = Event(name=fake.sentence(nb_words=4), type=random.choice(['concert', 'opera', 'theater']),
+    for _ in tqdm(range(num_events), desc='Creating Events'):
+        event = Event(name=fake.sentence(nb_words=4), type=random.choice(['concert', 'opera', 'theater','football','soccer','baseball','basketball','conference']),
                       status='scheduled')
         event_ids.append(event)
     session.add_all(event_ids)
@@ -106,17 +106,18 @@ def main(args):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    create_fake_data(session, args.num_users, args.num_purchases, args.num_cancellations, args.num_payments)
+    create_fake_data(session, args.num_users, args.num_purchases, args.num_events args.num_cancellations, args.num_payments)
 
     session.close()
     print("Data generation complete!")
 
 
 if __name__ == "__main__":
-    # python db-seed/seed.py --num_users 50 --num_purchases 100 --num_cancellations 20 --num_payments 400
+    # python seed.py --num_users 1000 --num_purchases 15000000 ----num_events 200000 --num_cancellations 200000 --num_payments 20000
     parser = argparse.ArgumentParser(description='Generate fake data for ticket purchasing service.')
     parser.add_argument('--num_users', type=int, default=1000, help='Number of users to generate')
     parser.add_argument('--num_purchases', type=int, default=5000, help='Number of purchases to generate')
+    parser.add_argument('--num_events', type=int, default=5000, help='Number of purchases to generate')
     parser.add_argument('--num_cancellations', type=int, default=1000, help='Number of cancellations to generate')
     parser.add_argument('--num_payments', type=int, default=5000, help='Number of payments to generate')
 
