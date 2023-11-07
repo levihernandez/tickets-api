@@ -89,9 +89,7 @@ func main() {
     tlsConfig.Certificates = []tls.Certificate{cert}
     tlsConfig.RootCAs = caCertPool
 
-
-
-	db = pg.Connect(&pg.Options{
+	opts := &pg.Options{
 		Addr:     "<host>:26257",
 		User:     "",
 		Password: "",
@@ -101,7 +99,12 @@ func main() {
 
         // TLS settings
         TLSConfig: tlsConfig,
-	})
+	}
+
+	// db.SetMaxIdleConns(10)
+	// db.SetMaxOpenConns(50)
+	
+	db = pg.Connect(opts)
 	defer db.Close()
 
 	// Set application name using Exec
@@ -111,8 +114,22 @@ func main() {
 		fmt.Println(q)
 	}
 
-	r := gin.Default()
 
+	// Simulate pool disruption
+	fmt.Println("Simulating connection pool disruption...")
+	db.Close() // This will close all connections in the pool
+
+	// Simulate some downtime
+	time.Sleep(5 * time.Second)
+
+	// "Restart" the connection pool by creating a new pool
+	fmt.Println("Restarting the connection pool...")
+	db = pg.Connect(opts)
+	defer db.Close() // ensure closure of the new connection pool
+
+	
+	
+	r := gin.Default()
     config := cors.DefaultConfig()
     config.AllowOrigins = []string{"http://192.168.86.202:3000"}  // Replace with your React frontend's address
     config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
