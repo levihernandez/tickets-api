@@ -14,8 +14,8 @@ Tickets API Simulation
 
 * GET: `/user/:uuid/purchases` - get user purchases
 * GET: `/user/:uuid/purchases/cancellations` - get user cancellations
-* GET: `/search/users` - search users `http://localhost:3001/search/users?name=Abigail` for go-pg
-* GET: `/search/users` - search users `http://localhost:3002/search/users?name=Abigail` for pgx
+* GET: `/search/user/:uuid` - search users by ID `http://localhost:3001/search/user/27912e48-88f5-4dca-b549-88da7bdda1f4` for go-pg
+* GET: `/search/user/:uuid` - search users by ID `http://localhost:3002/search/user/27912e48-88f5-4dca-b549-88da7bdda1f4` for pgx
 
 ## Start GO-PG Tickets API Endpoint
 
@@ -26,6 +26,19 @@ go mod init gopg-api
 go mod tidy
 go run *.go
 ```
+
+### Collect Test Data Points for the k6 Test
+
+```sql
+SELECT purchase.user_id
+  FROM purchases AS purchase LEFT
+    JOIN users AS users
+     ON users.id = purchase.user_id LEFT
+    JOIN events AS events
+     ON events.id = purchase.event_id order by random() limit 100 ;
+```
+
+The results will need to be added to the k6 `const names = []`
 
 ### Run K6 Stress Test
 
