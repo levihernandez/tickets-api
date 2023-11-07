@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, Column, String, ForeignKey, Numeric, DECIMAL
+from sqlalchemy.pool import QueuePool 
 from sqlalchemy.orm import declarative_base, sessionmaker
 import uuid
 from faker import Faker
@@ -9,6 +10,8 @@ import argparse
 fake = Faker()
 Base = declarative_base()
 
+pool_size = 20
+max_overflow = 25
 
 class User(Base):
     __tablename__ = 'users'
@@ -92,7 +95,12 @@ def main(args):
     #    'cockroachdb://{user}:{password}@{crdb-url}:26257/tickets?sslmode=verify-full&sslrootcert={home_certs}/certs/ca.crt&sslcert={home_certs}/certs/client.julian.crt&sslkey={home_certs}/certs/client.julian.key'
     # )
     engine = create_engine(
-        'cockroachdb://{user}:{password}@{crdb-url}:26257/tickets?sslmode=verify-full&sslrootcert={home_certs}/certs/ca.crt&sslcert={home_certs}/certs/client.julian.crt&sslkey={home_certs}/certs/client.julian.key'
+        'cockroachdb://{user}:{password}@{crdb-url}:26257/tickets?sslmode=verify-full&sslrootcert={home_certs}/certs/ca.crt&sslcert={home_certs}/certs/client.julian.crt&sslkey={home_certs}/certs/client.julian.key',
+        poolclass=QueuePool,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_pre_ping=True
+    )
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
