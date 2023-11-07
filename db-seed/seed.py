@@ -113,7 +113,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    # python seed.py --num_users 1000 --num_purchases 15000000 ----num_events 200000 --num_cancellations 200000 --num_payments 20000
+    # python seed.py --num_users 1000 --num_purchases 15000000 --num_events 200000 --num_cancellations 200000 --num_payments 20000
     parser = argparse.ArgumentParser(description='Generate fake data for ticket purchasing service.')
     parser.add_argument('--num_users', type=int, default=1000, help='Number of users to generate')
     parser.add_argument('--num_purchases', type=int, default=5000, help='Number of purchases to generate')
