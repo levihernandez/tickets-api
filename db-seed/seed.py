@@ -106,7 +106,7 @@ def main(args):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    create_fake_data(session, args.num_users, args.num_purchases, args.num_events args.num_cancellations, args.num_payments)
+    create_fake_data(session, args.num_users, args.num_purchases, args.num_events, args.num_cancellations, args.num_payments)
 
     session.close()
     print("Data generation complete!")
