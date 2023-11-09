@@ -5,10 +5,10 @@ Tickets API Simulation
 
 * Install dependencies
   * `pip install -r requirements.txt`
-* Change the DB url in db-seed/seed.py
-  * `engine = create_engine('cockroachdb://root@192.168.86.74:26257/tickets')`
+* Update the `config/config.json` with the DB information
 * Execute the Python script
-  * `python db-seed/seed.py  --num_users 1000 --num_purchases 15000000 --num_events 200000 --num_cancellations 200000 --num_payments 20000`
+  * Secure CRDB: `python db-seed/seed.py --secure --config config/config.json --num_users 10000 --num_purchases 10000 --num_events 10000 --num_cancellations 10000 --num_payments 10000`
+  * Insecure CRDB: `python db-seed/seed.py --config config/config.json --num_users 10000 --num_purchases 10000 --num_events 10000 --num_cancellations 10000 --num_payments 10000`
 
 ## Tickets API Endpoints
 
