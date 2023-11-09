@@ -6,9 +6,26 @@ Tickets API Simulation
 * Install dependencies
   * `pip install -r requirements.txt`
 * Update the `config/config.json` with the DB information
-* Execute the Python script
-  * Secure CRDB: `python db-seed/seed.py --secure --config config/config.json --num_users 10000 --num_purchases 10000 --num_events 10000 --num_cancellations 10000 --num_payments 10000`
-  * Insecure CRDB: `python db-seed/seed.py --config config/config.json --num_users 10000 --num_purchases 10000 --num_events 10000 --num_cancellations 10000 --num_payments 10000`
+* Execute the Python script to generate Users and Events
+  * Secure CRDB: `python db-seed/seed.py --secure --config config/config.json --num_users 10000 --num_events 10000 --num_purchases 1 --num_cancellations 1 --num_payments 1`
+  * Insecure CRDB: `python db-seed/seed.py --config config/config.json --num_users 10000 --num_events 10000 --num_purchases 1 --num_cancellations 1 --num_payments 1`
+
+We only generated 1 row for the rest of the tables, this is just to trigger their creation and have a sample record. To generate a large payload of a user buying tickets for events and seed the purchases and cancellations tables, use the following SQL in Cockroach:
+
+```sql
+INSERT INTO purchases (id, user_id, event_id, status)
+ SELECT 
+ 	gen_random_uuid() as id,
+    u.id AS user_id,
+    e.id AS event_id,
+    CASE WHEN random() < 0.5 THEN 'cancelled' ELSE 'confirmed' END AS status
+FROM 
+    (SELECT id FROM users 10000) AS u
+CROSS JOIN 
+    (SELECT id FROM events ORDER BY random() LIMIT (random() * 450 + 50)::int) AS e;
+```
+
+This query will generate a large payload of purchases per user (~450 rows). 
 
 ## Tickets API Endpoints
 
