@@ -1,0 +1,35 @@
+{
+  "cockroach": {
+    "database": {
+      "host": "192.168.86.74",
+      "port": 26257,
+      "user": "root",
+      "password": " ",
+      "database": "tickets",
+      "application_name": "myAppName",
+      "sslmode": "disable",
+      "pool_size": 10,
+      "pool_max_conn_lifetime": "1h",
+      "pool_max_conn_lifetime_jitter": "5m",
+      "pool_max_conns": 20
+    },
+    "ssl": {
+      "rootcert": "/certs/client.root.crt",
+      "certfile": "/certs/client.julian.crt",
+      "keyfile": "/certs/client.julian.key"
+
+    }
+  },
+  "app": {
+    "api": {
+      "host": "api.example.com",
+      "port": 3000
+    },
+    "frontend": {
+      "host": "frontend.example.com"
+    }
+  },
+  "server": {
+    "home_dir": "/path/to/server/home"
+  }
+}
