@@ -20,7 +20,7 @@ INSERT INTO purchases (id, user_id, event_id, status)
     e.id AS event_id,
     CASE WHEN random() < 0.5 THEN 'cancelled' ELSE 'confirmed' END AS status
 FROM 
-    (SELECT id FROM users 10000) AS u
+    (SELECT id FROM users LIMIT 100) AS u
 CROSS JOIN 
     (SELECT id FROM events ORDER BY random() LIMIT (random() * 450 + 50)::int) AS e;
 ```
